@@ -1,0 +1,69 @@
+{
+    "cells": [
+        {
+            "language": "javascript",
+            "source": [
+                "// Baglanma kodu\r\nconst MongoClient = require(\"mongodb\").MongoClient;// Connection URI\r\nconst uri = \"mongodb://localhost:27017\";\r\n// Create a new MongoClient\r\nconst client = new MongoClient(uri);\r\nasync function run() {\r\n  try {\r\n    // Connect the client to the server (optional starting in v4.7)\r\n    await client.connect();\r\n    // Establish and verify connection\r\n    console.log(\"Connected successfully to server\");\r\n  } finally {\r\n    // Ensures that the client will close when you finish/error\r\n    console.log(\"close\")\r\n    await client.close();\r\n  }\r\n}\r\nrun().catch(console.dir);"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "Connected successfully to server",
+                                "close",
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "// INSERT\r\nconst MongoClient = require(\"mongodb\").MongoClient; // Connection URI\r\nconst uri = \"mongodb://localhost:27017\";\r\n// Create a new MongoClient\r\nconst client = new MongoClient(uri);\r\nasync function run() {\r\n   try {\r\n      // Connect the client to the server (optional starting in v4.7)\r\n      await client.connect();\r\n      console.log(\"Connected successfully to server\");\r\n      const myDB = client.db(\"fruitsDB\");\r\n      const myColl = myDB.collection(\"fruits\");\r\n\r\n      try {\r\n         const docs = [\r\n            \r\n            \r\n            {\r\n               \"_id\": 3,\r\n               \"color\": \"yellow\"\r\n            },\r\n            {\r\n               \"_id\": 4,\r\n               \"color\": \"blue\"\r\n            }\r\n         ];\r\n\r\n         const insertManyresult = await myColl.insertMany(docs);\r\n         let ids = insertManyresult.insertedIds;\r\n\r\n         console.log(`${insertManyresult.insertedCount} documents were inserted.`);\r\n         for (let id of Object.values(ids)) {\r\n            console.log(`Inserted a document with id ${id}`);\r\n         }\r\n      } catch (e) {\r\n         console.log(`A MongoBulkWriteException occurred, but there are successfully processed documents.`);\r\n         let ids = e.result.result.insertedIds;\r\n         for (let id of Object.values(ids)) {\r\n            console.log(`Processed a document with id ${id._id}`);\r\n         }\r\n         console.log(`Number of documents inserted: ${e.result.result.nInserted}`);\r\n      }\r\n      // Establish and verify connection\r\n\r\n   } finally {\r\n      // Ensures that the client will close when you finish/error\r\n      console.log(\"close\")\r\n      await client.close();\r\n   }\r\n}\r\nrun().catch(console.dir);"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "Connected successfully to server",
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "// READ\r\nconst MongoClient = require(\"mongodb\").MongoClient; // Connection URI\r\nconst uri = \"mongodb://localhost:27017\";\r\n// Create a new MongoClient\r\nconst client = new MongoClient(uri);\r\n\r\nasync function run() {\r\n  try {\r\n    const database = client.db(\"fruitsDB\");\r\n    const movies = database.collection(\"fruits\");\r\n\r\n    // query for movies that have a runtime less than 15 minutes\r\n    const query = {};\r\n\r\n\r\n    const cursor = movies.find(query);\r\n\r\n    // replace console.dir with your callback to access individual elements\r\n    await cursor.forEach(console.dir);\r\n  } finally {\r\n    console.log(\"close\")\r\n    await client.close();\r\n  }\r\n}\r\nrun().catch(console.dir);\r\n\r\n"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "{ _id: 1, color: 'red' }",
+                                "{ _id: 2, color: 'purple' }",
+                                "{ _id: 3, color: 'yellow' }",
+                                "{ _id: 4, color: 'blue' }",
+                                "close",
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
